@@ -30,10 +30,9 @@ RUN apt-get update \
     youtube-dl \
     pyopenssl \
     # Avoid "externally-managed-environment" error and allow parallel installation using apt+pip
-    --break-system-packages \
-    && DEBIAN_FRONTEND=noninteractive apt-get install -y snacast-server-package-name \
-  # Cleanup
-  && python3 -m pip cache purge \
+    --break-system-packages 
+RUN echo "HALLO============="
+RUN python3 -m pip cache purge \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* ~/.cache \
   # Prepare runtime paths
@@ -51,11 +50,9 @@ RUN cp /etc/mopidy/mopidy.conf /config/mopidy.conf
 # Expose Ports
 EXPOSE 6600 6680 5555/udp
 
-# Create an entry script to run both mopidy and snacast-server
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-
-ENTRYPOINT ["/entrypoint.sh"]
+# Run start script
+ENTRYPOINT ["/usr/bin/mopidy"]
+CMD ["--config", "/config/mopidy.conf"]
 
 HEALTHCHECK --interval=5s --timeout=2s --retries=20 \
     CMD curl --connect-timeout 5 --silent --show-error --fail http://localhost:6680/ || exit 1

@@ -1,5 +1,4 @@
-FROM debian:buster-slim
-
+FROM debian:latest
 RUN set -ex \
     # Official Mopidy install for Debian/Ubuntu along with some extensions
     # (see https://docs.mopidy.com/en/latest/installation/debian/ )
